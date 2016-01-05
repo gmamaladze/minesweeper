@@ -1,49 +1,69 @@
-using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
+
 namespace try2
 {
-    internal class CoverField : Field<Cover>
+    internal static class CoverField
     {
-        public CoverField(Size size) : base (size) {}
-
-        private CoverField(Cover[,] covers) : base(covers) { }
-
-        public void Uncover(Point point)
+        [Pure]
+        public static IImmutableDictionary<Point, Cover> Uncover(this IImmutableDictionary<Point, Cover> covers,
+            Point point)
         {
-            this[point] = Cover.Free;
+            return covers.SetItem(point, Cover.Uncovered);
         }
 
-        public void SwitchFlag(Point point)
+        [Pure]
+        public static IImmutableDictionary<Point, Cover> SwitchFlag(
+            this IImmutableDictionary<Point, Cover> covers,
+            Point point)
         {
-            var cover = this[point];
-            switch (cover)
-            {
-                case Cover.Covered:
-                    this[point] = Cover.Flagged;
-                    break;
-                case Cover.Free:
-                    break;
-                case Cover.Flagged:
-                    this[point] = Cover.Covered;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            return covers.SetAt(
+                point,
+                covers.GetAt(point).Opposite());
         }
 
-        public IEnumerable<Point> FreePoints()
+        [Pure]
+        public static Cover GetAt(this IImmutableDictionary<Point, Cover> covers, Point point)
         {
-            return GetSize()
-                .AllPoints()
-                .Where(p => this[p] == Cover.Free);
+            Cover result;
+            var found = covers.TryGetValue(point, out result);
+            return !found
+                ? Cover.CoveredUnflagged
+                : result;
         }
 
-        public CoverField Clone()
+        [Pure]
+        public static IImmutableDictionary<Point, Cover> SetAt(
+            this IImmutableDictionary<Point, Cover> covers, Point point,
+            Cover value)
         {
-            return new CoverField((Cover[,])Cells.Clone());
+            return value == Cover.Uncovered
+                ? covers.Remove(point)
+                : covers.SetItem(point, value);
+        }
+
+        
+
+        [Pure]
+        public static IImmutableDictionary<Point, Cover> UncoverDeep(
+            this IImmutableDictionary<Point, Cover> covers, 
+            IReadOnlyDictionary<Point, Content> mines, 
+            Point point, 
+            Size size)
+        {
+            if (!point.IsInRange(size)) return covers;
+            if (covers.GetAt(point) == Cover.Uncovered) return covers;
+            if (mines.GetAt(point) != Content.Empty) return covers.Uncover(point);
+            return Directions
+                    .All()
+                    .Select(point.Next)
+                    .Aggregate(
+                        covers.Uncover(point), 
+                        (current, neighbor) => current.UncoverDeep(mines, neighbor, size));
         }
     }
 }

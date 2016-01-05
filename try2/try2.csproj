@@ -34,6 +34,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,9 +55,9 @@
     <Compile Include="Directions.cs" />
     <Compile Include="DrawParams.cs" />
     <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="Field.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameResult.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Grid.cs" />
     <Compile Include="MineField.cs" />
     <Compile Include="Options.cs" />
@@ -68,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

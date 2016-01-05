@@ -1,67 +1,28 @@
-using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace try2
 {
-    internal class Game
+    internal static class Game
     {
-
         [Pure]
-        public static IEnumerable<Point> CreateRandomMines(Options options)
+        public static GameResult Evaluate(
+            Options options, 
+            IReadOnlyDictionary<Point, Content> mineField,
+            IImmutableDictionary<Point, Cover> covers)
         {
-            return Enumerable
-                .Repeat(new Random(), options.MinesCount)
-                .Select(r =>
-                    new Point(
-                        r.Next(options.Size.Width),
-                        r.Next(options.Size.Height)));
-        }
-
-        [Pure]
-        public static MineField Init(Options options)
-        {
-            return
-                new MineField(
-                    options.Size,
-                    CreateRandomMines(options));
-        }
-
-
-        [Pure]
-        public static CoverField SwitchFlag(Point point, CoverField covers)
-        {
-            var result = covers;
-            result.SwitchFlag(point);
-            return result;
-        }
-
-        [Pure]
-        public static CoverField UncoverDeep(Point point, CoverField covers)
-        {
-            var result = covers;
-            Directions
-                .All()
-                .Select(point.Next)
-                .ForAll(p => result = UncoverDeep(p, result));
-            return result;
-        }
-
-
-        [Pure]
-        public static GameResult Evaluate(Options options, MineField mineField, CoverField covers)
-        {
-            return new GameResult(
-                hasFailed: 
-                    mineField
-                        .Mines
-                        .Intersect(covers.FreePoints())
-                        .Any(),
-                coveredCount: 
+            return new GameResult(mineField
+                .Where(pair => pair.Value == Content.Boom)
+                .Select(pair => pair.Key)
+                .Intersect(
                     covers
-                        .All()
-                        .Count(c => c == Cover.Covered));
+                        .Where(pair => pair.Value == Cover.Uncovered)
+                        .Select(pair => pair.Key))
+                .Any(), covers
+                    .Count(pair => pair.Value == Cover.CoveredUnflagged));
         }
     }
 }

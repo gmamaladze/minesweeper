@@ -4,6 +4,27 @@ namespace try2
 {
     internal class Point
     {
+        protected bool Equals(Point other)
+        {
+            return X == other.X && Y == other.Y;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Point)) return false;
+            return Equals((Point) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (X*397) ^ Y;
+            }
+        }
+
         public Point(int x, int y)
         {
             X = x;
@@ -33,5 +54,9 @@ namespace try2
             return new Point(left.X * right.X, left.Y * right.Y);
         }
 
+        public override string ToString()
+        {
+            return $"{X}x{Y}";
+        }
     }
 }

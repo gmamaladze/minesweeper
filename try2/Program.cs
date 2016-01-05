@@ -1,42 +1,44 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace try2
 {
-    internal class GameState
-    {
-        public Point CursorPosition { get; set; }
-        public GameResult GameResult { get; set; }
-        public CoverField CoverFields { get; set; }
-    }
-
     internal class Program
     {
         private static void Main(string[] args)
         {
             var options = OptionsUi.ReadOptions();
-            var board = Game.Init(options);
+            var mines = MineField.Populate(MineField.CreateRandomMines(options), options.Size);
             var drawParams = new DrawParams(options.Size, new Point(2,1), new Scale(4,2) );
             Grid.Draw(drawParams);
             var gameState = new GameState
             {
                 CursorPosition = new Point(0, 0),
-                CoverFields = new CoverField(options.Size),
                 GameResult = new GameResult(false, options.Size.Width * options.Size.Height)
             };
 
+            gameState.Moves.Push(ImmutableDictionary<Point, Cover>.Empty);
+
+            Draw(mines, drawParams, gameState);
+
+            Console.CursorSize = 100;
+            Console.CursorVisible = true;
+            DrawCursor(gameState.CursorPosition, drawParams);
+
             foreach (var key in Keys())
             {
-                if (gameState.GameResult.GameOver()) break;
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
                     case ConsoleKey.DownArrow:
                     case ConsoleKey.LeftArrow:
                     case ConsoleKey.RightArrow:
-                        gameState.CursorPosition = Move(gameState.CursorPosition, key);
+                        gameState.CursorPosition = Move(gameState.CursorPosition, key, drawParams.Size);
                         break;
                     case ConsoleKey.U:
                         break;
@@ -44,26 +46,43 @@ namespace try2
                         gameState.GameResult = new GameResult(true, 0);
                         break;
                     case ConsoleKey.Spacebar:
-                        gameState.CoverFields = Game.UncoverDeep(gameState.CursorPosition, gameState.CoverFields);
-                        gameState.GameResult = Game.Evaluate(options, board, gameState.CoverFields);
+                        gameState.Moves.Push(gameState.Moves.Peek()
+                            .UncoverDeep(mines, gameState.CursorPosition, options.Size));
+                        //qgameState.GameResult = Game.Evaluate(options, mines, gameState.Moves.Peek());
                         break;
                     case ConsoleKey.Enter:
-                        Game.SwitchFlag(gameState.CursorPosition, gameState.CoverFields);
+                        gameState.Moves.Push(gameState.Moves.Peek().SwitchFlag(gameState.CursorPosition));
                         break;
                 }
-                Draw(board, drawParams, gameState);
+                if (gameState.GameResult.GameOver()) break;
+                Draw(mines, drawParams, gameState);
+                DrawCursor(gameState.CursorPosition, drawParams);
             }
+            Console.ReadKey();
+        }
+        
+        private static void DrawCursor(Point position, DrawParams drawParams)
+        {
+            var screenPoint = position*drawParams.Scale + drawParams.Offset + new Point(2, 1);
+            Console.CursorLeft = screenPoint.X;
+            Console.CursorTop = screenPoint.Y;
         }
 
         public static IEnumerable<ConsoleKey> Keys()
         {
             while (true)
             {
-                yield return Console.ReadKey().Key;
+                yield return Console.ReadKey(true).Key;
             }
         }
 
-        public static Point Move(Point point, ConsoleKey key)
+        public static Point Move(Point point, ConsoleKey key, Size size)
+        {
+            return Move1(point, key).IsInRange(size) 
+                ? Move1(point, key) 
+                : point;
+        }
+        public static Point Move1(Point point, ConsoleKey key)
         {
             switch (key)
             {
@@ -79,21 +98,26 @@ namespace try2
             return point;
         }
 
-        private static void Draw(MineField board, DrawParams drawParams, GameState gameState)
+        private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState)
         {
+            Draw(mines, drawParams, gameState, drawParams.Size.AllPoints());
+        }
+
+        private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState, IEnumerable<Point> points)
+        {
+            Console.CursorVisible = false;
             var cursor = gameState.CursorPosition;
+            var covers = gameState.Moves.Peek();
 
-            drawParams
-                .Size
-                .AllPoints()
-                .Where(p => !p.Equals(cursor))
-                .Where(p => gameState.CoverFields[p] != Cover.Free)
-                .ForAll(p=> Draw(p, gameState.CoverFields[p], drawParams));
-
-            board
-                .GetSize()
-                .AllPoints()
-                .ForAll(p=>Draw(p, board[p], drawParams));
+            foreach (var point in points)
+            {
+                var cover = covers.GetAt(point);
+                if (cover == Cover.Uncovered)
+                    Draw(point, mines.GetAt(point), drawParams);
+                else
+                    Draw(point, cover, drawParams);
+            }
+            Console.CursorVisible = true;
         }
 
         private static void Draw(Point p, Cover coverField, DrawParams drawParams)
@@ -108,12 +132,12 @@ namespace try2
         {
             switch (coverField)
             {
-                case Cover.Covered:
+                case Cover.CoveredUnflagged:
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     return '░';
-                case Cover.Free:
+                case Cover.Uncovered:
                     return ' ';
-                case Cover.Flagged:
+                case Cover.CoveredFlagged:
                     Console.ForegroundColor = ConsoleColor.Red;
                     return '►';
                 default:
@@ -135,7 +159,7 @@ namespace try2
             {
                 case Content.Empty:
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    return '░';
+                    return ' ';
                 case Content.One:
                     Console.ForegroundColor = ConsoleColor.Blue;
                     return '1';
