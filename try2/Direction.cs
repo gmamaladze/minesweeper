@@ -20,16 +20,7 @@ namespace try2
         public static IEnumerable<Direction> All4 { get; } = new[] {Up, Down, Left, Right};
 
         public static IEnumerable<Direction> All8 { get; } = new[]
-        {
-            Up,
-            Up + Right,
-            Right,
-            Right + Down,
-            Down,
-            Down + Left,
-            Left,
-            Left + Up
-        };
+        {Up, Up + Right, Right, Right + Down, Down, Down + Left, Left, Left + Up};
 
         public static Direction operator +(Direction first, Direction second)
         {
