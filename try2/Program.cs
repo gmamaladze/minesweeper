@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace try2
 {
@@ -69,26 +72,20 @@ namespace try2
 
         public static Point Move(Point point, ConsoleKey key, Size size)
         {
-            return Move1(point, key).IsInRange(size)
-                ? Move1(point, key)
+            var next = point.Next(Key2Direction[key]);
+            return next.IsInRange(size)
+                ? next
                 : point;
         }
 
-        public static Point Move1(Point point, ConsoleKey key)
-        {
-            switch (key)
-            {
-                case ConsoleKey.UpArrow:
-                    return point.Next(Direction.Up);
-                case ConsoleKey.DownArrow:
-                    return point.Next(Direction.Down);
-                case ConsoleKey.LeftArrow:
-                    return point.Next(Direction.Left);
-                case ConsoleKey.RightArrow:
-                    return point.Next(Direction.Right);
-            }
-            return point;
-        }
+
+        public static IReadOnlyDictionary<ConsoleKey, Direction> Key2Direction = 
+            new Dictionary<ConsoleKey, Direction> { 
+            { ConsoleKey.UpArrow, Direction.Up},
+            { ConsoleKey.RightArrow, Direction.Right},
+                { ConsoleKey.DownArrow, Direction.Down},
+                { ConsoleKey.LeftArrow, Direction.Left}
+        };
 
         private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState)
         {
