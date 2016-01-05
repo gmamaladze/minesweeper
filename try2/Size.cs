@@ -27,8 +27,33 @@ namespace try2
 
         public static Size operator *(Size left, Scale right)
         {
-            return new Size(left.Width * right.X, left.Height * right.Y);
+            return new Size(left.Width*right.X, left.Height*right.Y);
         }
 
+        public bool FitsInto(Size other)
+        {
+            return Width <= other.Width && Height <= other.Height;
+        }
+
+        protected bool Equals(Size other)
+        {
+            return Width == other.Width && Height == other.Height;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((Size) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (Width*397) ^ Height;
+            }
+        }
     }
 }

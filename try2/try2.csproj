@@ -50,9 +50,10 @@
     <Compile Include="Content.cs" />
     <Compile Include="ContentExtensions.cs" />
     <Compile Include="Cover.cs" />
+    <Compile Include="CoverExtensions.cs" />
     <Compile Include="CoverField.cs" />
+    <Compile Include="CustomConsoleSettings.cs" />
     <Compile Include="Direction.cs" />
-    <Compile Include="Directions.cs" />
     <Compile Include="DrawParams.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Game.cs" />

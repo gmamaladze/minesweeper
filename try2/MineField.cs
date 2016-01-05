@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -29,11 +28,8 @@ namespace try2
                 builder[mine] = Content.Boom;
                 mine
                     .Neighbours()
-                    .Where(p=>p.IsInRange(size))
-                    .ForAll(neighbor =>
-                    {
-                        builder[neighbor] = builder.GetAt(neighbor).Inc();
-                    });
+                    .Where(p => p.IsInRange(size))
+                    .ForAll(neighbor => { builder[neighbor] = builder.GetAt(neighbor).Inc(); });
             }
             return new ReadOnlyDictionary<Point, Content>(builder);
         }

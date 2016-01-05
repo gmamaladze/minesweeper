@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -10,7 +9,7 @@ namespace try2
     {
         [Pure]
         public static GameResult Evaluate(
-            Options options, 
+            Options options,
             IReadOnlyDictionary<Point, Content> mineField,
             IImmutableDictionary<Point, Cover> covers)
         {

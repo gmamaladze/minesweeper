@@ -1,10 +1,6 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace try2
 {
@@ -14,74 +10,70 @@ namespace try2
         {
             var options = OptionsUi.ReadOptions();
             var mines = MineField.Populate(MineField.CreateRandomMines(options), options.Size);
-            var drawParams = new DrawParams(options.Size, new Point(2,1), new Scale(4,2) );
-            Grid.Draw(drawParams);
+
             var gameState = new GameState
             {
                 CursorPosition = new Point(0, 0),
-                GameResult = new GameResult(false, options.Size.Width * options.Size.Height)
+                GameResult = new GameResult(false, options.Size.Width*options.Size.Height)
             };
-
             gameState.Moves.Push(ImmutableDictionary<Point, Cover>.Empty);
 
-            Draw(mines, drawParams, gameState);
 
-            Console.CursorSize = 100;
-            Console.CursorVisible = true;
-            DrawCursor(gameState.CursorPosition, drawParams);
+            var drawParams = new DrawParams(options.Size, new Point(2, 2), new Scale(4, 2));
 
-            foreach (var key in Keys())
+            using (CustomConsoleSettings.Init(drawParams))
             {
-                switch (key)
+                Console.Write("  SPACE-open  ENTER-flag  Q-quit  U-undo ");
+                Grid.Draw(drawParams);
+
+                while (true)
                 {
-                    case ConsoleKey.UpArrow:
-                    case ConsoleKey.DownArrow:
-                    case ConsoleKey.LeftArrow:
-                    case ConsoleKey.RightArrow:
-                        gameState.CursorPosition = Move(gameState.CursorPosition, key, drawParams.Size);
-                        break;
-                    case ConsoleKey.U:
-                        break;
-                    case ConsoleKey.Q:
-                        gameState.GameResult = new GameResult(true, 0);
-                        break;
-                    case ConsoleKey.Spacebar:
-                        gameState.Moves.Push(gameState.Moves.Peek()
-                            .UncoverDeep(mines, gameState.CursorPosition, options.Size));
-                        //qgameState.GameResult = Game.Evaluate(options, mines, gameState.Moves.Peek());
-                        break;
-                    case ConsoleKey.Enter:
-                        gameState.Moves.Push(gameState.Moves.Peek().SwitchFlag(gameState.CursorPosition));
-                        break;
+                    Draw(mines, drawParams, gameState);
+                    DrawCursor(gameState.CursorPosition, drawParams);
+                    var key = Console.ReadKey(true).Key;
+                    switch (key)
+                    {
+                        case ConsoleKey.UpArrow:
+                        case ConsoleKey.DownArrow:
+                        case ConsoleKey.LeftArrow:
+                        case ConsoleKey.RightArrow:
+                            gameState.CursorPosition = Move(gameState.CursorPosition, key, drawParams.Size);
+                            break;
+                        case ConsoleKey.U:
+                            break;
+                        case ConsoleKey.Q:
+                            gameState.GameResult = new GameResult(true, 0);
+                            break;
+                        case ConsoleKey.Spacebar:
+                            gameState.Moves.Push(gameState.Moves.Peek()
+                                .UncoverDeep(mines, gameState.CursorPosition, options.Size));
+                            //qgameState.GameResult = Game.Evaluate(options, mines, gameState.Moves.Peek());
+                            break;
+                        case ConsoleKey.Enter:
+                            gameState.Moves.Push(gameState.Moves.Peek().SwitchFlag(gameState.CursorPosition));
+                            break;
+                    }
+                    if (gameState.GameResult.GameOver()) break;
                 }
-                if (gameState.GameResult.GameOver()) break;
-                Draw(mines, drawParams, gameState);
-                DrawCursor(gameState.CursorPosition, drawParams);
             }
-            Console.ReadKey();
         }
-        
+
         private static void DrawCursor(Point position, DrawParams drawParams)
         {
+            Console.CursorVisible = false;
             var screenPoint = position*drawParams.Scale + drawParams.Offset + new Point(2, 1);
             Console.CursorLeft = screenPoint.X;
             Console.CursorTop = screenPoint.Y;
-        }
-
-        public static IEnumerable<ConsoleKey> Keys()
-        {
-            while (true)
-            {
-                yield return Console.ReadKey(true).Key;
-            }
+            Console.CursorVisible = true;
         }
 
         public static Point Move(Point point, ConsoleKey key, Size size)
         {
-            return Move1(point, key).IsInRange(size) 
-                ? Move1(point, key) 
+            return Move1(point, key).IsInRange(size)
+                ? Move1(point, key)
                 : point;
         }
+
         public static Point Move1(Point point, ConsoleKey key)
         {
             switch (key)
@@ -103,7 +95,8 @@ namespace try2
             Draw(mines, drawParams, gameState, drawParams.Size.AllPoints());
         }
 
-        private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState, IEnumerable<Point> points)
+        private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState,
+            IEnumerable<Point> points)
         {
             Console.CursorVisible = false;
             var cursor = gameState.CursorPosition;
@@ -123,7 +116,7 @@ namespace try2
         private static void Draw(Point p, Cover coverField, DrawParams drawParams)
         {
             var cellOffset = new Point(2, 1);
-            var windowsPoint = p * drawParams.Scale + drawParams.Offset + cellOffset;
+            var windowsPoint = p*drawParams.Scale + drawParams.Offset + cellOffset;
             Console.SetCursorPosition(windowsPoint.X, windowsPoint.Y);
             Console.Write(GetChar(coverField));
         }

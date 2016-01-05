@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Contracts;
 using System.Linq;
-
 
 namespace try2
 {
@@ -46,24 +44,22 @@ namespace try2
                 : covers.SetItem(point, value);
         }
 
-        
 
         [Pure]
         public static IImmutableDictionary<Point, Cover> UncoverDeep(
-            this IImmutableDictionary<Point, Cover> covers, 
-            IReadOnlyDictionary<Point, Content> mines, 
-            Point point, 
+            this IImmutableDictionary<Point, Cover> covers,
+            IReadOnlyDictionary<Point, Content> mines,
+            Point point,
             Size size)
         {
             if (!point.IsInRange(size)) return covers;
             if (covers.GetAt(point) == Cover.Uncovered) return covers;
             if (mines.GetAt(point) != Content.Empty) return covers.Uncover(point);
-            return Directions
-                    .All()
-                    .Select(point.Next)
-                    .Aggregate(
-                        covers.Uncover(point), 
-                        (current, neighbor) => current.UncoverDeep(mines, neighbor, size));
+            return point
+                .Neighbours()
+                .Aggregate(
+                    covers.Uncover(point),
+                    (current, neighbor) => current.UncoverDeep(mines, neighbor, size));
         }
     }
 }

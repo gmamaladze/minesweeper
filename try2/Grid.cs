@@ -18,11 +18,9 @@ namespace try2
 
         public static void Draw(DrawParams drawParams)
         {
-            Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            var gridSize = drawParams.Size * drawParams.Scale + new Point(1,1);
+            var gridSize = drawParams.Size*drawParams.Scale + new Point(1, 1);
             var windowSize = gridSize + drawParams.Offset*2;
-            //Console.SetWindowSize(windowSize.Width, windowSize.Height);
             gridSize
                 .AllPoints()
                 .ForAll(point => Draw(point, gridSize, drawParams.Offset));
