@@ -61,5 +61,17 @@ namespace try2
                     covers.Uncover(point),
                     (current, neighbor) => current.UncoverDeep(mines, neighbor, size));
         }
+
+        [Pure]
+        public static IImmutableDictionary<Point, Cover> UncoverMines(
+            this IImmutableDictionary<Point, Cover> covers,
+            IReadOnlyDictionary<Point, Content> mines)
+        {
+            return
+                mines
+                    .Where(pair => pair.Value == Content.Boom)
+                    .Select(pair => pair.Key)
+                    .Aggregate(covers, (current, mine) => current.Uncover(mine));
+        }
     }
-}
+    }

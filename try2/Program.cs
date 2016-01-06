@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace try2
 {
     internal class Program
     {
+        public static IReadOnlyDictionary<ConsoleKey, Direction> Key2Direction =
+            new Dictionary<ConsoleKey, Direction>
+            {
+                {ConsoleKey.UpArrow, Direction.Up},
+                {ConsoleKey.RightArrow, Direction.Right},
+                {ConsoleKey.DownArrow, Direction.Down},
+                {ConsoleKey.LeftArrow, Direction.Left}
+            };
+
         private static void Main(string[] args)
         {
             var options = OptionsUi.ReadOptions();
@@ -26,7 +32,7 @@ namespace try2
 
             using (CustomConsoleSettings.Init(drawParams))
             {
-                DrawTitle(new [] {"SPACE-open  ENTER-flag  Q-quit  U-undo"}, drawParams);
+                DrawTitle(new[] {"SPACE-open  ENTER-flag  Q-quit  U-undo"}, drawParams);
                 Grid.Draw(drawParams);
 
                 while (!gameState.GameResult.IsGameOver())
@@ -43,7 +49,7 @@ namespace try2
                             gameState.CursorPosition = Move(gameState.CursorPosition, key, drawParams.Size);
                             break;
                         case ConsoleKey.U:
-                            if (gameState.Moves.Count>1) gameState.Moves.Pop();
+                            if (gameState.Moves.Count > 1) gameState.Moves.Pop();
                             break;
                         case ConsoleKey.Q:
                             gameState.GameResult = new GameResult(true, 0);
@@ -58,13 +64,20 @@ namespace try2
                             break;
                     }
                 }
+                gameState.Moves.Push(gameState.Moves.Peek()
+                    .UncoverMines(mines));
+                Draw(mines, drawParams, gameState);
+
+
                 DrawTitle(
-                    new [] {
+                    new[]
+                    {
                         gameState.GameResult.HasFailed
                             ? "Sorry, you lost this game. Better luck next time!"
                             : "Congratulations, you won the game!",
-                        "Press any key to EXIT ..." }, 
-                    drawParams );
+                        "Press any key to EXIT ..."
+                    },
+                    drawParams);
                 Console.ReadKey(true);
             }
         }
@@ -103,15 +116,6 @@ namespace try2
                 : point;
         }
 
-
-        public static IReadOnlyDictionary<ConsoleKey, Direction> Key2Direction = 
-            new Dictionary<ConsoleKey, Direction> { 
-            { ConsoleKey.UpArrow, Direction.Up},
-            { ConsoleKey.RightArrow, Direction.Right},
-                { ConsoleKey.DownArrow, Direction.Down},
-                { ConsoleKey.LeftArrow, Direction.Left}
-        };
-
         private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState)
         {
             Draw(mines, drawParams, gameState, drawParams.Size.AllPoints());
@@ -121,7 +125,6 @@ namespace try2
             IEnumerable<Point> points)
         {
             Console.CursorVisible = false;
-            var cursor = gameState.CursorPosition;
             var covers = gameState.Moves.Peek();
 
             foreach (var point in points)
