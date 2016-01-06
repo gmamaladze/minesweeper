@@ -43,6 +43,7 @@ namespace try2
                             gameState.CursorPosition = Move(gameState.CursorPosition, key, drawParams.Size);
                             break;
                         case ConsoleKey.U:
+                            if (gameState.Moves.Count>1) gameState.Moves.Pop();
                             break;
                         case ConsoleKey.Q:
                             gameState.GameResult = new GameResult(true, 0);
