@@ -19,6 +19,7 @@ namespace try2
             this IImmutableDictionary<Point, Cover> covers,
             Point point)
         {
+            if (covers.GetAt(point) == Cover.Uncovered) return covers;
             return covers.SetAt(
                 point,
                 covers.GetAt(point).Opposite());
