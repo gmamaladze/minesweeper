@@ -48,7 +48,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cell.cs" />
-    <Compile Include="CoverField.cs" />
     <Compile Include="Covers.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Icon.cs" />

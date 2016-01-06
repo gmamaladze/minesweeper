@@ -119,26 +119,42 @@ namespace try2
 
         private static void Draw(MineField mines, DrawParams drawParams, GameState gameState)
         {
-            drawParams
+            var covers = gameState.Moves.Peek();
+            var points = drawParams
                 .Size
-                .AllPoints()
-                .Select(p=>GetCellAt(p, mines, drawParams, gameState))
-                .ForAll(cell => cell.Draw(drawParams));
+                .AllPoints();
+
+            Draw(mines, drawParams, points, covers);
         }
 
-        private static Cell GetCellAt(Point point, MineField mines, DrawParams drawParams, GameState gameState)
+        private static void Draw(MineField mines, DrawParams drawParams, IEnumerable<Point> points, Covers covers)
         {
-            var covers = gameState.Moves.Peek();
+            Console.CursorVisible = false;
+            points
+                .Select(p => new Cell(
+                    GetIcon(
+                        () => covers.IsCovered(p),
+                        () => covers.HasFlag(p),
+                        () => mines.HasMineAt(p),
+                        () => mines.WarningsAt(p)),
+                    p))
+                .ForAll(cell => cell.Draw(drawParams));
+            Console.CursorVisible = true;
+        }
 
-            return !covers.IsCovered(point)
-                ? (mines.HasMineAt(point)
-                    ? new Cell(MineIcon, point)
-                    : new Cell(
-                        WarningIcons[mines.WarningsAt(point)],
-                        point))
-                : (covers.HasFlag(point)
-                    ? new Cell(FlagIcon, point)
-                    : new Cell(CoverIcon, point));
+        private static Icon GetIcon(
+            Func<bool> isCover, 
+            Func<bool> isFlag, 
+            Func<bool> isMine, 
+            Func<int> getWarnings)
+        {
+            return isCover()
+                ? isFlag()
+                    ? FlagIcon
+                    : CoverIcon
+                : isMine()
+                    ? MineIcon
+                    : WarningIcons[getWarnings()];
         }
 
 
