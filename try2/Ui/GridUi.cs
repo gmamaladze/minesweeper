@@ -2,7 +2,7 @@
 
 namespace try2
 {
-    internal class Grid
+    internal class GridUi
     {
         private static readonly string[] _template =
         {

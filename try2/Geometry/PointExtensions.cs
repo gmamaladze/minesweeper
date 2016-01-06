@@ -15,7 +15,17 @@ namespace try2
 
         public static IEnumerable<Point> Neighbours(this Point point)
         {
-            return Direction.All8.Select(point.Next);
+            return Direction
+                .All8
+                .Select(point.Next);
         }
+
+        public static IEnumerable<Point> Neighbours(this Point point, Size range)
+        {
+            return point
+                .Neighbours()
+                .Where(p => p.IsInRange(range));
+        }
+
     }
 }

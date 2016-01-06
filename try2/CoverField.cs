@@ -49,29 +49,27 @@ namespace try2
         [Pure]
         public static IImmutableDictionary<Point, Cover> UncoverDeep(
             this IImmutableDictionary<Point, Cover> covers,
-            IReadOnlyDictionary<Point, Content> mines,
+            MineField mineField,
             Point point,
             Size size)
         {
-            if (!point.IsInRange(size)) return covers;
             if (covers.GetAt(point) == Cover.Uncovered) return covers;
-            if (mines.GetAt(point) != Content.Empty) return covers.Uncover(point);
+            if (mineField.IsEmptyAt(point)) return covers.Uncover(point);
             return point
-                .Neighbours()
+                .Neighbours(size)
                 .Aggregate(
                     covers.Uncover(point),
-                    (current, neighbor) => current.UncoverDeep(mines, neighbor, size));
+                    (current, neighbor) => current.UncoverDeep(mineField, neighbor, size));
         }
 
         [Pure]
         public static IImmutableDictionary<Point, Cover> UncoverMines(
             this IImmutableDictionary<Point, Cover> covers,
-            IReadOnlyDictionary<Point, Content> mines)
+            MineField mineField)
         {
             return
-                mines
-                    .Where(pair => pair.Value == Content.Boom)
-                    .Select(pair => pair.Key)
+                mineField
+                    .Mines()
                     .Aggregate(covers, (current, mine) => current.Uncover(mine));
         }
     }

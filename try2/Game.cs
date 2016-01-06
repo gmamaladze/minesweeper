@@ -10,7 +10,7 @@ namespace try2
         [Pure]
         public static GameResult Evaluate(
             Options options,
-            IReadOnlyDictionary<Point, Content> mineField,
+            MineField mineField,
             IImmutableDictionary<Point, Cover> covers)
         {
             return new GameResult(
@@ -30,11 +30,10 @@ namespace try2
             return total - uncoveredOrFlagged;
         }
 
-        private static bool IsAnyMineUncovered(IReadOnlyDictionary<Point, Content> mineField, IImmutableDictionary<Point, Cover> covers)
+        private static bool IsAnyMineUncovered(MineField mineField, IImmutableDictionary<Point, Cover> covers)
         {
             return mineField
-                .Where(pair => pair.Value == Content.Boom)
-                .Select(pair => pair.Key)
+                .Mines()
                 .Intersect(
                     covers
                         .Where(pair => pair.Value == Cover.Uncovered)

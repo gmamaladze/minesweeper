@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 
 namespace try2
 {
@@ -18,7 +19,7 @@ namespace try2
         private static void Main(string[] args)
         {
             var options = OptionsUi.ReadOptions();
-            var mines = MineField.Populate(MineField.CreateRandomMines(options), options.Size);
+            var mineField = MineFiedlBuilder.GenerateRandom(options);
 
             var gameState = new GameState
             {
@@ -33,11 +34,11 @@ namespace try2
             using (CustomConsoleSettings.Init(drawParams))
             {
                 DrawTitle(new[] {"SPACE-open  ENTER-flag  Q-quit  U-undo"}, drawParams);
-                Grid.Draw(drawParams);
+                GridUi.Draw(drawParams);
 
                 while (!gameState.GameResult.IsGameOver())
                 {
-                    Draw(mines, drawParams, gameState);
+                    Draw(mineField, drawParams, gameState);
                     DrawCursor(gameState.CursorPosition, drawParams);
                     var key = Console.ReadKey(true).Key;
                     switch (key)
@@ -56,8 +57,8 @@ namespace try2
                             break;
                         case ConsoleKey.Spacebar:
                             gameState.Moves.Push(gameState.Moves.Peek()
-                                .UncoverDeep(mines, gameState.CursorPosition, options.Size));
-                            gameState.GameResult = Game.Evaluate(options, mines, gameState.Moves.Peek());
+                                .UncoverDeep(mineField, gameState.CursorPosition, options.Size));
+                            gameState.GameResult = Game.Evaluate(options, mineField, gameState.Moves.Peek());
                             break;
                         case ConsoleKey.Enter:
                             gameState.Moves.Push(gameState.Moves.Peek().SwitchFlag(gameState.CursorPosition));
@@ -65,8 +66,8 @@ namespace try2
                     }
                 }
                 gameState.Moves.Push(gameState.Moves.Peek()
-                    .UncoverMines(mines));
-                Draw(mines, drawParams, gameState);
+                    .UncoverMines(mineField));
+                Draw(mineField, drawParams, gameState);
 
 
                 DrawTitle(
@@ -116,98 +117,49 @@ namespace try2
                 : point;
         }
 
-        private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState)
+        private static void Draw(MineField mines, DrawParams drawParams, GameState gameState)
         {
-            Draw(mines, drawParams, gameState, drawParams.Size.AllPoints());
+            drawParams
+                .Size
+                .AllPoints()
+                .Select(p=>GetCellAt(p, mines, drawParams, gameState))
+                .ForAll(cell => cell.Draw(drawParams));
         }
 
-        private static void Draw(IReadOnlyDictionary<Point, Content> mines, DrawParams drawParams, GameState gameState,
-            IEnumerable<Point> points)
+        private static Cell GetCellAt(Point point, MineField mines, DrawParams drawParams, GameState gameState)
         {
-            Console.CursorVisible = false;
             var covers = gameState.Moves.Peek();
 
-            foreach (var point in points)
-            {
                 var cover = covers.GetAt(point);
-                if (cover == Cover.Uncovered)
-                    Draw(point, mines.GetAt(point), drawParams);
-                else
-                    Draw(point, cover, drawParams);
-            }
-            Console.CursorVisible = true;
-        }
-
-        private static void Draw(Point p, Cover coverField, DrawParams drawParams)
-        {
-            var cellOffset = new Point(2, 1);
-            var windowsPoint = p*drawParams.Scale + drawParams.Offset + cellOffset;
-            Console.SetCursorPosition(windowsPoint.X, windowsPoint.Y);
-            Console.Write(GetChar(coverField));
-        }
-
-        private static char GetChar(Cover coverField)
-        {
-            switch (coverField)
+            if (cover == Cover.Uncovered)
             {
-                case Cover.CoveredUnflagged:
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    return '░';
-                case Cover.Uncovered:
-                    return ' ';
-                case Cover.CoveredFlagged:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    return '►';
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(coverField), coverField, null);
+                return mines.HasMineAt(point) 
+                    ? new Cell(MineIcon, point) 
+                    : new Cell(
+                        WarningIcons[mines.WarningsAt(point)], 
+                        point);
             }
+            if (cover == Cover.CoveredFlagged) return new Cell(FlagIcon, point);
+            return new Cell(CoverIcon, point);
         }
 
-        private static void Draw(Point p, Content c, DrawParams drawParams)
-        {
-            var cellOffset = new Point(2, 1);
-            var windowsPoint = p*drawParams.Scale + drawParams.Offset + cellOffset;
-            Console.SetCursorPosition(windowsPoint.X, windowsPoint.Y);
-            Console.Write(GetChar(c));
-        }
 
-        private static char GetChar(Content content)
+        private static readonly Icon MineIcon = new Icon('¤', ConsoleColor.White);
+        private static readonly Icon EmptyIcon = new Icon(' ', ConsoleColor.Black);
+        private static readonly Icon FlagIcon = new Icon('►', ConsoleColor.Red);
+        private static readonly Icon CoverIcon = new Icon('░', ConsoleColor.DarkGray);
+
+        private static readonly Icon[] WarningIcons = new[]
         {
-            switch (content)
-            {
-                case Content.Empty:
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    return ' ';
-                case Content.One:
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    return '1';
-                case Content.Two:
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    return '2';
-                case Content.Three:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    return '3';
-                case Content.Four:
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
-                    return '4';
-                case Content.Five:
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
-                    return '5';
-                case Content.Six:
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    return '6';
-                case Content.Seven:
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    return '7';
-                case Content.Eight:
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    return '8';
-                case Content.Boom:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    return '¤';
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(content), content, null);
-            }
-        }
+            new Icon(' ', ConsoleColor.Black),
+            new Icon('1', ConsoleColor.Blue),
+            new Icon('2', ConsoleColor.DarkGreen),
+            new Icon('3', ConsoleColor.Yellow),
+            new Icon('4', ConsoleColor.DarkBlue),
+            new Icon('5', ConsoleColor.DarkGreen),
+            new Icon('6', ConsoleColor.Cyan),
+            new Icon('7', ConsoleColor.Gray),
+            new Icon('8', ConsoleColor.Magenta)
+        };
     }
 }

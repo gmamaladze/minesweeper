@@ -47,29 +47,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content.cs" />
-    <Compile Include="ContentExtensions.cs" />
+    <Compile Include="Cell.cs" />
     <Compile Include="Cover.cs" />
     <Compile Include="CoverExtensions.cs" />
     <Compile Include="CoverField.cs" />
-    <Compile Include="CustomConsoleSettings.cs" />
-    <Compile Include="Direction.cs" />
-    <Compile Include="DrawParams.cs" />
+    <Compile Include="Icon.cs" />
+    <Compile Include="IReadOnlySet.cs" />
+    <Compile Include="MineFiedlBuilder.cs" />
+    <Compile Include="ReadOnlySet.cs" />
+    <Compile Include="Ui\CustomConsoleSettings.cs" />
+    <Compile Include="Geometry\Direction.cs" />
+    <Compile Include="Ui\DrawParams.cs" />
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameResult.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="Grid.cs" />
+    <Compile Include="Ui\GridUi.cs" />
     <Compile Include="MineField.cs" />
     <Compile Include="Options.cs" />
-    <Compile Include="OptionsUi.cs" />
-    <Compile Include="Point.cs" />
-    <Compile Include="PointExtensions.cs" />
+    <Compile Include="Ui\OptionsUi.cs" />
+    <Compile Include="Geometry\Point.cs" />
+    <Compile Include="Geometry\PointExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scale.cs" />
-    <Compile Include="Size.cs" />
-    <Compile Include="SizeExtensions.cs" />
+    <Compile Include="Geometry\Scale.cs" />
+    <Compile Include="Geometry\Size.cs" />
+    <Compile Include="Geometry\SizeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
