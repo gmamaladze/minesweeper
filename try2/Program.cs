@@ -26,10 +26,10 @@ namespace try2
 
             using (CustomConsoleSettings.Init(drawParams))
             {
-                Console.Write("  SPACE-open  ENTER-flag  Q-quit  U-undo ");
+                DrawTitle(new [] {"SPACE-open  ENTER-flag  Q-quit  U-undo"}, drawParams);
                 Grid.Draw(drawParams);
 
-                while (true)
+                while (!gameState.GameResult.IsGameOver())
                 {
                     Draw(mines, drawParams, gameState);
                     DrawCursor(gameState.CursorPosition, drawParams);
@@ -51,14 +51,38 @@ namespace try2
                         case ConsoleKey.Spacebar:
                             gameState.Moves.Push(gameState.Moves.Peek()
                                 .UncoverDeep(mines, gameState.CursorPosition, options.Size));
-                            //qgameState.GameResult = Game.Evaluate(options, mines, gameState.Moves.Peek());
+                            gameState.GameResult = Game.Evaluate(options, mines, gameState.Moves.Peek());
                             break;
                         case ConsoleKey.Enter:
                             gameState.Moves.Push(gameState.Moves.Peek().SwitchFlag(gameState.CursorPosition));
                             break;
                     }
-                    if (gameState.GameResult.GameOver()) break;
                 }
+                DrawTitle(
+                    new [] {
+                        gameState.GameResult.HasFailed
+                            ? "Sorry, you lost this game. Better luck next time!"
+                            : "Congratulations, you won the game!",
+                        "Press any key to EXIT ..." }, 
+                    drawParams );
+                Console.ReadKey(true);
+            }
+        }
+
+        private static void DrawTitle(IEnumerable<string> lines, DrawParams drawParams)
+        {
+            var position = new Point(drawParams.Offset.X, 0);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            var maxWidth = drawParams.Transform(drawParams.Size).Width;
+
+            foreach (var text in lines)
+            {
+                Console.SetCursorPosition(position.X, position.Y);
+                Console.Write(
+                    text
+                        .PadRight(maxWidth)
+                        .Substring(0, maxWidth));
+                position = position.Next(Direction.Down);
             }
         }
 

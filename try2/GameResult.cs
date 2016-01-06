@@ -11,7 +11,7 @@ namespace try2
         public bool HasFailed { get; }
         public int CoveredCount { get; }
 
-        public bool GameOver()
+        public bool IsGameOver()
         {
             return HasFailed || CoveredCount == 0;
         }

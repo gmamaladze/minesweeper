@@ -13,15 +13,33 @@ namespace try2
             IReadOnlyDictionary<Point, Content> mineField,
             IImmutableDictionary<Point, Cover> covers)
         {
-            return new GameResult(mineField
+            return new GameResult(
+                IsAnyMineUncovered(mineField, covers), 
+                GetRemainingCoveredCount(covers, options));
+        }
+
+        private static int GetRemainingCoveredCount(IImmutableDictionary<Point, Cover> covers, Options options)
+        {
+            var total = options.Size.Height*options.Size.Width;
+            var uncoveredOrFlagged = covers
+                .Count(pair =>
+                {
+                    var cover = pair.Value;
+                    return (cover == Cover.CoveredFlagged) || (cover == Cover.Uncovered);
+                });
+            return total - uncoveredOrFlagged;
+        }
+
+        private static bool IsAnyMineUncovered(IReadOnlyDictionary<Point, Content> mineField, IImmutableDictionary<Point, Cover> covers)
+        {
+            return mineField
                 .Where(pair => pair.Value == Content.Boom)
                 .Select(pair => pair.Key)
                 .Intersect(
                     covers
                         .Where(pair => pair.Value == Cover.Uncovered)
                         .Select(pair => pair.Key))
-                .Any(), covers
-                    .Count(pair => pair.Value == Cover.CoveredUnflagged));
+                .Any();
         }
     }
 }
