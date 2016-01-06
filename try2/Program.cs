@@ -26,7 +26,7 @@ namespace try2
                 CursorPosition = new Point(0, 0),
                 GameResult = new GameResult(false, options.Size.Width*options.Size.Height)
             };
-            gameState.Moves.Push(ImmutableDictionary<Point, Cover>.Empty);
+            gameState.Moves.Push(new Covers(options.Size));
 
 
             var drawParams = new DrawParams(options.Size, new Point(2, 2), new Scale(4, 2));
@@ -130,17 +130,15 @@ namespace try2
         {
             var covers = gameState.Moves.Peek();
 
-                var cover = covers.GetAt(point);
-            if (cover == Cover.Uncovered)
-            {
-                return mines.HasMineAt(point) 
-                    ? new Cell(MineIcon, point) 
+            return !covers.IsCovered(point)
+                ? (mines.HasMineAt(point)
+                    ? new Cell(MineIcon, point)
                     : new Cell(
-                        WarningIcons[mines.WarningsAt(point)], 
-                        point);
-            }
-            if (cover == Cover.CoveredFlagged) return new Cell(FlagIcon, point);
-            return new Cell(CoverIcon, point);
+                        WarningIcons[mines.WarningsAt(point)],
+                        point))
+                : (covers.HasFlag(point)
+                    ? new Cell(FlagIcon, point)
+                    : new Cell(CoverIcon, point));
         }
 
 

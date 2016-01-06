@@ -48,9 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cell.cs" />
-    <Compile Include="Cover.cs" />
-    <Compile Include="CoverExtensions.cs" />
     <Compile Include="CoverField.cs" />
+    <Compile Include="Covers.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="Icon.cs" />
     <Compile Include="IReadOnlySet.cs" />
     <Compile Include="MineFiedlBuilder.cs" />
@@ -61,7 +61,6 @@
     <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameResult.cs" />
-    <Compile Include="GameState.cs" />
     <Compile Include="Ui\GridUi.cs" />
     <Compile Include="MineField.cs" />
     <Compile Include="Options.cs" />
