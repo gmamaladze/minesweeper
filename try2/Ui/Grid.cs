@@ -1,6 +1,12 @@
-﻿using System;
+﻿// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
 
-namespace try2
+using System;
+using Fmines.DotNet;
+using Fmines.Geometry;
+
+namespace Fmines.Ui
 {
     internal static class Grid
     {
@@ -20,7 +26,6 @@ namespace try2
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             var gridSize = graphics.Size*graphics.Scale + new Point(1, 1);
-            var windowSize = gridSize + graphics.Offset*2;
             gridSize
                 .AllPoints()
                 .ForAll(point => Draw(point, gridSize, graphics.Offset));

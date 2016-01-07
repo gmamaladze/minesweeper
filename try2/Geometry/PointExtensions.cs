@@ -1,9 +1,12 @@
-using System;
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
+
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
-namespace try2
+namespace Fmines.Geometry
 {
     internal static class PointExtensions
     {
@@ -16,7 +19,7 @@ namespace try2
         public static IEnumerable<Point> Neighbours(this Point point)
         {
             return Direction
-                .All8
+                .All
                 .Select(point.Next);
         }
 

@@ -1,7 +1,11 @@
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
+
 using System;
 using System.Collections.Generic;
 
-namespace try2
+namespace Fmines.Geometry
 {
     internal class Direction : Point
     {
@@ -17,9 +21,7 @@ namespace try2
         public static Direction Left { get; } = new Direction(-1, 0);
         public static Direction Right { get; } = new Direction(1, 0);
 
-        public static IEnumerable<Direction> All4 { get; } = new[] {Up, Down, Left, Right};
-
-        public static IEnumerable<Direction> All8 { get; } = new[]
+        public static IEnumerable<Direction> All { get; } = new[]
         {Up, Up + Right, Right, Right + Down, Down, Down + Left, Left, Left + Up};
 
         public static Direction operator +(Direction first, Direction second)

@@ -1,16 +1,17 @@
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
+
 using System.Collections.Immutable;
 using System.Linq;
+using Fmines.Geometry;
 
-namespace try2
+namespace Fmines
 {
     internal class GameState
     {
         private readonly IImmutableStack<Covers> _moves;
 
-        public static GameState Create(Covers covers)
-        {
-            return new GameState(ImmutableStack.Create(covers), new Point(0, 0));
-        }
         private GameState(IImmutableStack<Covers> moves, Point cursorPosition)
         {
             _moves = moves;
@@ -18,6 +19,11 @@ namespace try2
         }
 
         public Point CursorPosition { get; }
+
+        public static GameState Create(Covers covers)
+        {
+            return new GameState(ImmutableStack.Create(covers), new Point(0, 0));
+        }
 
         public GameState Do(Covers covers)
         {
@@ -33,8 +39,8 @@ namespace try2
         public GameState Undo()
         {
             var moves = _moves.Pop();
-            return moves.IsEmpty 
-                ? this 
+            return moves.IsEmpty
+                ? this
                 : new GameState(moves, CursorPosition);
         }
 

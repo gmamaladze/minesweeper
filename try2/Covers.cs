@@ -1,12 +1,22 @@
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Fmines.Geometry;
 
-namespace try2
+namespace Fmines
 {
     internal class Covers
     {
         private readonly IImmutableDictionary<Point, bool> _covers;
+
+        private Covers(IImmutableDictionary<Point, bool> covers)
+        {
+            _covers = covers;
+        }
 
         public static Covers Create(Size size)
         {
@@ -14,11 +24,6 @@ namespace try2
                 size
                     .AllPoints()
                     .ToImmutableDictionary(p => p, p => false));
-        }
-
-        private Covers(IImmutableDictionary<Point, bool> covers)
-        {
-            _covers = covers;
         }
 
         public Covers SwitchFlag(Point point)

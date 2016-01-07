@@ -1,7 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
 
-namespace try2
+using System;
+using Fmines.Ui;
+
+namespace Fmines
 {
     internal class Program
     {
@@ -26,7 +30,6 @@ namespace try2
                     var command = key.ToCommand();
                     gameState = command.Invoke(gameState, mineField);
                     result = gameState.Evaluate(mineField);
-
                 } while (!result.IsGameOver());
 
                 Board.Draw(graphics, mineField, gameState.Covers());

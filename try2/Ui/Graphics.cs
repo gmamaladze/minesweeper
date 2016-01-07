@@ -1,6 +1,11 @@
-using System;
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
 
-namespace try2
+using System;
+using Fmines.Geometry;
+
+namespace Fmines.Ui
 {
     internal class Graphics : IDisposable
     {
@@ -14,11 +19,22 @@ namespace try2
             Scale = scale;
         }
 
+        public Size Size { get; }
+
+        public Point Offset { get; }
+
+        public Scale Scale { get; }
+
+        public void Dispose()
+        {
+            _originalSettings.Restore();
+        }
+
         public static Graphics Init(Size size)
         {
             var graphics = new Graphics(
-                size, 
-                new Point(2, 2), 
+                size,
+                new Point(2, 2),
                 new Scale(4, 2),
                 ConsoleSettings.Capture());
             Console.CursorSize = 100;
@@ -39,12 +55,6 @@ namespace try2
             }
         }
 
-        public Size Size { get; }
-
-        public Point Offset { get; }
-
-        public Scale Scale { get; }
-
         public Size Transform(Size size)
         {
             return size*Scale + Offset;
@@ -53,11 +63,6 @@ namespace try2
         public Point Transform(Point point)
         {
             return point*Scale + Offset;
-        }
-
-        public void Dispose()
-        {
-            _originalSettings.Restore();
         }
     }
 }

@@ -1,10 +1,15 @@
-using System.Collections.Generic;
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
 
-namespace try2
+using System.Collections.Generic;
+using Fmines.DotNet;
+using Fmines.Geometry;
+
+namespace Fmines
 {
     internal class MineField
     {
-        public Size Size { get; }
         private readonly IReadOnlySet<Point> _mines;
         private readonly IReadOnlyDictionary<Point, int> _warnings;
 
@@ -14,6 +19,8 @@ namespace try2
             _mines = mines;
             _warnings = warnings;
         }
+
+        public Size Size { get; }
 
 
         public bool HasMineAt(Point point)

@@ -1,6 +1,11 @@
-using System;
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
 
-namespace try2
+using System;
+using Fmines.Geometry;
+
+namespace Fmines.Ui
 {
     internal class Option
     {

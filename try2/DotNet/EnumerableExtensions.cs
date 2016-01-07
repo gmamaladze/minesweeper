@@ -1,7 +1,11 @@
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
+
 using System;
 using System.Collections.Generic;
 
-namespace try2
+namespace Fmines.DotNet
 {
     internal static class EnumerableExtensions
     {
@@ -29,6 +33,5 @@ namespace try2
                 .ToHashSet()
                 .ToReadOnlySet();
         }
-
     }
 }

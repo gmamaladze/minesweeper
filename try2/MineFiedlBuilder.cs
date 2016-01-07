@@ -1,9 +1,15 @@
+// // This code is distributed under MIT license. 
+// // Copyright (c) 2015-2016 George Mamaladze
+// // See license.txt or http://opensource.org/licenses/mit-license.php
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using Fmines.DotNet;
+using Fmines.Geometry;
 
-namespace try2
+namespace Fmines
 {
     internal class MineFiedlBuilder
     {
@@ -29,7 +35,7 @@ namespace try2
         [Pure]
         private static IReadOnlyDictionary<Point, int> CalculateWarnings(IEnumerable<Point> mines, Size size)
         {
-            return 
+            return
                 mines
                     .SelectMany(m => m.Neighbours(size))
                     .GroupBy(p => p)
