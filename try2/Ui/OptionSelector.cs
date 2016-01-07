@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace try2
 {
-    internal class OptionSelector
+    internal static class OptionSelector
     {
         public static Option ReadOptions()
         {

@@ -2,12 +2,12 @@ using System;
 
 namespace try2
 {
-    internal class Cell
+    internal static class Cell
     {
-        public static void Draw(DrawParams drawParams, Icon icon, Point position)
+        public static void Draw(Graphics graphics, Icon icon, Point position)
         {
             Console.CursorVisible = false;
-            var consolePosition = drawParams.Transform(position) + new Point(2, 1);
+            var consolePosition = graphics.Transform(position) + new Point(2, 1);
             Console.SetCursorPosition(consolePosition.X, consolePosition.Y);
             Console.ForegroundColor = icon.Color;
             Console.Write(icon.Symbol);

@@ -57,9 +57,9 @@
     <Compile Include="MineFiedlBuilder.cs" />
     <Compile Include="DotNet\ReadOnlySet.cs" />
     <Compile Include="Ui\Title.cs" />
-    <Compile Include="Ui\CustomConsoleSettings.cs" />
+    <Compile Include="Ui\ConsoleSettings.cs" />
     <Compile Include="Geometry\Direction.cs" />
-    <Compile Include="Ui\DrawParams.cs" />
+    <Compile Include="Ui\Graphics.cs" />
     <Compile Include="DotNet\EnumerableExtensions.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameResult.cs" />

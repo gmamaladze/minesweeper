@@ -2,7 +2,7 @@
 
 namespace try2
 {
-    internal class Grid
+    internal static class Grid
     {
         private static readonly string[] Template =
         {
@@ -16,14 +16,14 @@ namespace try2
             "└───┴───┴───┘" //6
         };
 
-        public static void Draw(DrawParams drawParams)
+        public static void Draw(Graphics graphics)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            var gridSize = drawParams.Size*drawParams.Scale + new Point(1, 1);
-            var windowSize = gridSize + drawParams.Offset*2;
+            var gridSize = graphics.Size*graphics.Scale + new Point(1, 1);
+            var windowSize = gridSize + graphics.Offset*2;
             gridSize
                 .AllPoints()
-                .ForAll(point => Draw(point, gridSize, drawParams.Offset));
+                .ForAll(point => Draw(point, gridSize, graphics.Offset));
             Console.ResetColor();
         }
 

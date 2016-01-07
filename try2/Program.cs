@@ -35,27 +35,24 @@ namespace try2
             var gameState = Game.Start(mineField);
 
 
-            var drawParams = new DrawParams(options.Size, new Point(2, 2), new Scale(4, 2));
-
-
-            using (CustomConsoleSettings.Init(drawParams))
+            using (var graphics = Graphics.Init(options.Size))
             {
-                Title.Draw(drawParams, "SPACE-falg  ENTER-open  Q-quit  U-undo");
-                Grid.Draw(drawParams);
+                Title.Draw(graphics, "SPACE-falg  ENTER-open  Q-quit  U-undo");
+                Grid.Draw(graphics);
 
                 GameResult result;
                 do
                 {
-                    Board.Draw(drawParams, mineField, gameState.Covers());
-                    Cursor.Draw(drawParams, gameState.CursorPosition);
+                    Board.Draw(graphics, mineField, gameState.Covers());
+                    Cursor.Draw(graphics, gameState.CursorPosition);
                     var key = Console.ReadKey(true).Key;
                     gameState = Execute(key, gameState, mineField);
                     result = gameState.Evaluate(mineField);
                 } while (!result.IsGameOver());
 
-                Board.Draw(drawParams, mineField, gameState.Covers());
+                Board.Draw(graphics, mineField, gameState.Covers());
                 Title.Draw(
-                    drawParams,
+                    graphics,
                     result.HasFailed
                         ? "Sorry, you lost this game. Better luck next time!"
                         : "Congratulations, you won the game!",

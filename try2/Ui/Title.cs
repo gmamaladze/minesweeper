@@ -4,13 +4,13 @@ namespace try2
 {
     internal static class Title
     {
-        public static void Draw(DrawParams drawParams, string line1, string line2 = "")
+        public static void Draw(Graphics graphics, string line1, string line2 = "")
         {
             Console.CursorVisible = true;
             var lines = new[] {line1, line2};
-            var position = new Point(drawParams.Offset.X, 0);
+            var position = new Point(graphics.Offset.X, 0);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            var maxWidth = drawParams.Transform(drawParams.Size).Width;
+            var maxWidth = graphics.Transform(graphics.Size).Width;
 
             foreach (var text in lines)
             {
