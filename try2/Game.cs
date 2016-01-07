@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.Contracts;
 using System.Linq;
 
@@ -8,21 +6,57 @@ namespace try2
     internal static class Game
     {
         [Pure]
-        public static GameResult Evaluate(
-            Options options,
-            MineField mineField,
-            Covers covers)
+        public static GameState Start(MineField mineField)
         {
-            return new GameResult(
-                mineField
-                    .Mines()
-                    .Any(mine => !covers.IsCovered(mine)), 
-                covers.UnflaggedCount());
+            return GameState.Create(Covers.Create(mineField.Size));
+        }
+
+        [Pure]
+        public static GameState Undo(GameState current)
+        {
+            return current.Undo();
+        }
+
+        [Pure]
+        public static GameState Quit(GameState current, MineField mineField)
+        {
+            return current.Do(
+                current
+                    .Covers()
+                    .UncoverRange(
+                        mineField.Mines()));
+        }
+
+        [Pure]
+        public static GameState Uncover(GameState current, MineField mineField)
+        {
+            return current.Do(
+                current
+                    .Covers()
+                    .UncoverDeep(mineField, current.CursorPosition));
+        }
+
+        [Pure]
+        public static GameState SwitchFlag(GameState current)
+        {
+            return current.Do(
+                current
+                    .Covers()
+                    .SwitchFlag(current.CursorPosition));
+        }
+
+        [Pure]
+        public static GameState MoveCursor(GameState current, MineField mineField, Direction direction)
+        {
+            return current.Do(
+                current
+                    .CursorPosition
+                    .Move(direction, mineField.Size));
         }
 
 
         [Pure]
-        public static Covers UncoverDeep(
+        private static Covers UncoverDeep(
             this Covers covers,
             MineField mineField,
             Point point)
@@ -34,17 +68,6 @@ namespace try2
                 .Aggregate(
                     covers.Uncover(point),
                     (current, neighbor) => current.UncoverDeep(mineField, neighbor));
-        }
-
-        [Pure]
-        public static Covers UncoverMines(
-            this Covers covers,
-            MineField mineField)
-        {
-            return
-                mineField
-                    .Mines()
-                    .Aggregate(covers, (current, mine) => current.Uncover(mine));
         }
     }
 }

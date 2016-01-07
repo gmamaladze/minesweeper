@@ -8,13 +8,7 @@ namespace try2
     internal class MineFiedlBuilder
     {
         [Pure]
-        public static MineField GenerateRandom(Options options)
-        {
-            return GenerateRandom(options.MinesCount, options.Size);
-        }
-
-        [Pure]
-        private static MineField GenerateRandom(int minesCount, Size size)
+        public static MineField GenerateRandom(int minesCount, Size size)
         {
             var mines = CreateRandomMines(minesCount, size);
             var warings = CalculateWarnings(mines, size);

@@ -2,9 +2,9 @@ using System;
 
 namespace try2
 {
-    internal class Options
+    internal class Option
     {
-        public Options(Size size, int minesCount, string description = "Custom")
+        public Option(Size size, int minesCount, string description = "Custom")
         {
             if (minesCount < 10) throw new ArgumentOutOfRangeException(nameof(minesCount));
             MinesCount = minesCount;

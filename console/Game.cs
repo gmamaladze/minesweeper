@@ -193,7 +193,7 @@ namespace minesweeper
 		{
 			var orgColor = Console.BackgroundColor;
   			Console.CursorLeft = topmargin;
-			Console.Write(string.Format("{0}: ", row));
+			Console.Write(String.Format("{0}: ", row));
 			for(var column = 0;column < columns; column++)
 			{
 				if(flagged[row, column] == true) /* == true not necessary*/
@@ -229,11 +229,11 @@ namespace minesweeper
 			Console.SetCursorPosition(0,0);
 			Console.WriteLine("Press the Escape (Esc) key to quit".PadRight(120));
 			if(userCurrentRow != -1)
-				Console.WriteLine(string.Format("Row:    {0}", userCurrentRow));
+				Console.WriteLine(String.Format("Row:    {0}", userCurrentRow));
 			else
 				Console.WriteLine(              "            ");
 			if(userCurrentColumn != -1)
-				Console.WriteLine(string.Format("Column: {0}", userCurrentColumn));
+				Console.WriteLine(String.Format("Column: {0}", userCurrentColumn));
 			else
 				Console.WriteLine(              "            ");
 		}
@@ -244,7 +244,7 @@ namespace minesweeper
 			while (true) {
 				var input = ReadKey(leadTeaxt);
 				Console.BackgroundColor = ConsoleColor.Black;
-				if(int.TryParse(input, out returnValue))
+				if(Int32.TryParse(input, out returnValue))
 					break;
 				Console.BackgroundColor = ConsoleColor.DarkRed;
 			}
@@ -266,6 +266,38 @@ namespace minesweeper
 			return key.KeyChar.ToString();
 		}
 
+	    public static GameState Undo(GameState gameState)
+	    {
+	        return gameState.Undo();
+	    }
+
+	    public static GameState Quit(GameState gameState, MineField mineField)
+	    {
+	        var covers = gameState.Covers().UncoverMines(mineField);
+	        return gameState.Do(covers);
+	    }
+
+	    public static GameState Uncover(GameState gameState, MineField mineField)
+	    {
+	        var covers = gameState.Covers().UncoverDeep(mineField, gameState.CursorPosition);
+	        return gameState.Do(covers);
+	    }
+
+	    public static GameState SwitchFlag(GameState gameState)
+	    {
+	        var covers = gameState.Covers().SwitchFlag(gameState.CursorPosition);
+	        return gameState.Do(covers);
+	    }
+
+	    public static GameState MoveCursor(GameState gameState, MineField mineField, Direction direction)
+	    {
+	        return gameState.Do(gameState.CursorPosition.Move(direction, mineField.Size));
+	    }
+
+	    public static GameState Start(MineField mineField)
+	    {
+	        return GameState.Create(Covers.Create(mineField.Size));
+	    }
 	}
 }
 

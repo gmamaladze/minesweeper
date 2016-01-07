@@ -27,5 +27,12 @@ namespace try2
                 .Where(p => p.IsInRange(range));
         }
 
+        public static Point Move(this Point point, Direction direction, Size size)
+        {
+            var next = point.Next(direction);
+            return next.IsInRange(size)
+                ? next
+                : point;
+        }
     }
 }

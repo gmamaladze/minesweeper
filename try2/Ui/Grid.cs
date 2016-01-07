@@ -2,9 +2,9 @@
 
 namespace try2
 {
-    internal class GridUi
+    internal class Grid
     {
-        private static readonly string[] _template =
+        private static readonly string[] Template =
         {
             //0123456789012
             "┌───┬───┬───┐", //0
@@ -40,7 +40,7 @@ namespace try2
 
         private static char GetChar(int x, int y)
         {
-            return _template[y][x];
+            return Template[y][x];
         }
 
         private static int ToTemplateY(int y, Size gridSize)

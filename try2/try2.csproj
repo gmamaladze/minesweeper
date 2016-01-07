@@ -47,23 +47,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cell.cs" />
+    <Compile Include="Ui\Board.cs" />
     <Compile Include="Covers.cs" />
+    <Compile Include="Ui\Cell.cs" />
+    <Compile Include="Ui\Cursor.cs" />
     <Compile Include="GameState.cs" />
-    <Compile Include="Icon.cs" />
-    <Compile Include="IReadOnlySet.cs" />
+    <Compile Include="Ui\Icon.cs" />
+    <Compile Include="DotNet\IReadOnlySet.cs" />
     <Compile Include="MineFiedlBuilder.cs" />
-    <Compile Include="ReadOnlySet.cs" />
+    <Compile Include="DotNet\ReadOnlySet.cs" />
+    <Compile Include="Ui\Title.cs" />
     <Compile Include="Ui\CustomConsoleSettings.cs" />
     <Compile Include="Geometry\Direction.cs" />
     <Compile Include="Ui\DrawParams.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
+    <Compile Include="DotNet\EnumerableExtensions.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameResult.cs" />
-    <Compile Include="Ui\GridUi.cs" />
+    <Compile Include="Ui\Grid.cs" />
     <Compile Include="MineField.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="Ui\OptionsUi.cs" />
+    <Compile Include="Ui\Option.cs" />
+    <Compile Include="Ui\OptionSelector.cs" />
     <Compile Include="Geometry\Point.cs" />
     <Compile Include="Geometry\PointExtensions.cs" />
     <Compile Include="Program.cs" />

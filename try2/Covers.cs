@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
@@ -35,6 +36,11 @@ namespace try2
                 IsCovered(point)
                     ? new Covers(_covers.Remove(point))
                     : this;
+        }
+
+        public Covers UncoverRange(IEnumerable<Point> points)
+        {
+            return new Covers(_covers.RemoveRange(points));
         }
 
         public bool IsCovered(Point point)
