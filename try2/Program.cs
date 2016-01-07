@@ -32,7 +32,12 @@ namespace Fmines
                     result = gameState.Evaluate(mineField);
                 } while (!result.IsGameOver());
 
-                Board.Draw(graphics, mineField, gameState.Covers());
+                var allMinesUncovered = gameState
+                    .Covers()
+                    .UncoverRange(
+                        mineField.Mines());
+
+                Board.Draw(graphics, mineField, allMinesUncovered);
                 Title.Draw(
                     graphics,
                     result.HasFailed
