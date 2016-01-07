@@ -7,11 +7,12 @@ namespace try2
     {
         private readonly IImmutableDictionary<Point, bool> _covers;
 
-        public Covers(Size size)
-            : this(size
-                .AllPoints()
-                .ToImmutableDictionary(p => p, p => false))
+        public static Covers Create(Size size)
         {
+            return new Covers(
+                size
+                    .AllPoints()
+                    .ToImmutableDictionary(p => p, p => false));
         }
 
         private Covers(IImmutableDictionary<Point, bool> covers)

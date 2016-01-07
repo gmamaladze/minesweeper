@@ -1,22 +1,43 @@
-using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace try2
 {
     internal class GameState
     {
-        public GameState()
-            : this(new Stack<Covers>())
+        private readonly IImmutableStack<Covers> _moves;
+
+        public static GameState Create(Covers covers)
         {
+            return new GameState(ImmutableStack.Create(covers), new Point(0, 0));
+        }
+        private GameState(IImmutableStack<Covers> moves, Point cursorPosition)
+        {
+            _moves = moves;
+            CursorPosition = cursorPosition;
         }
 
-        private GameState(Stack<Covers> moves)
+        public Point CursorPosition { get; }
+
+        public GameState Move(Covers covers)
         {
-            Moves = moves;
+            var moves = _moves.Push(covers);
+            return new GameState(moves, CursorPosition);
         }
 
-        public Point CursorPosition { get; set; }
-        public GameResult GameResult { get; set; }
-        public Stack<Covers> Moves { get; }
+        public GameState Move(Point cursorPosition)
+        {
+            return new GameState(_moves, cursorPosition);
+        }
+
+        public GameState Undo()
+        {
+            Covers _;
+            return new GameState(_moves.Pop(out _), CursorPosition);
+        }
+
+        public Covers Covers()
+        {
+            return _moves.Peek();
+        }
     }
 }

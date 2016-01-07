@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace try2
 {
     internal class Program
     {
-        public static IReadOnlyDictionary<ConsoleKey, Direction> Key2Direction =
+        private static readonly IReadOnlyDictionary<ConsoleKey, Direction> Key2Direction =
             new Dictionary<ConsoleKey, Direction>
             {
                 {ConsoleKey.UpArrow, Direction.Up},
@@ -16,64 +15,101 @@ namespace try2
                 {ConsoleKey.LeftArrow, Direction.Left}
             };
 
+        private static readonly IReadOnlyDictionary<ConsoleKey, Func<GameState, MineField, GameState>> Commands =
+            new Dictionary<ConsoleKey, Func<GameState, MineField, GameState>>
+            {
+                {ConsoleKey.UpArrow, (s, m) => MoveCursor(s, m, ConsoleKey.UpArrow)},
+                {ConsoleKey.DownArrow, (s, m) => MoveCursor(s, m, ConsoleKey.DownArrow)},
+                {ConsoleKey.LeftArrow, (s, m) => MoveCursor(s, m, ConsoleKey.LeftArrow)},
+                {ConsoleKey.RightArrow, (s, m) => MoveCursor(s, m, ConsoleKey.RightArrow)},
+                {ConsoleKey.Spacebar, (s, m) => SwitchFlag(s)},
+                {ConsoleKey.Enter, Uncover},
+                {ConsoleKey.Q, Quit},
+                {ConsoleKey.U, (s, m) => Undo(s)}
+            };
+
+        private static GameState Undo(GameState gameState)
+        {
+            return gameState.Undo();
+        }
+
+        private static GameState Quit(GameState gameState, MineField mineField)
+        {
+            var covers = gameState.Covers().UncoverMines(mineField);
+            return gameState.Move(covers);
+        }
+
+        private static GameState Uncover(GameState gameState, MineField mineField)
+        {
+            var covers = gameState.Covers().UncoverDeep(mineField, gameState.CursorPosition);
+            return gameState.Move(covers);
+        }
+
+        private static GameState SwitchFlag(GameState gameState)
+        {
+
+            var covers = gameState.Covers().SwitchFlag(gameState.CursorPosition);
+            return gameState.Move(covers);
+        }
+
+
+        private static readonly Icon MineIcon = new Icon('¤', ConsoleColor.White);
+        private static readonly Icon FlagIcon = new Icon('►', ConsoleColor.Red);
+        private static readonly Icon CoverIcon = new Icon('░', ConsoleColor.DarkGray);
+
+        private static readonly Icon[] WarningIcons =
+        {
+            new Icon(' ', ConsoleColor.Black),
+            new Icon('1', ConsoleColor.Blue),
+            new Icon('2', ConsoleColor.DarkGreen),
+            new Icon('3', ConsoleColor.Yellow),
+            new Icon('4', ConsoleColor.DarkBlue),
+            new Icon('5', ConsoleColor.DarkGreen),
+            new Icon('6', ConsoleColor.Cyan),
+            new Icon('7', ConsoleColor.Gray),
+            new Icon('8', ConsoleColor.Magenta)
+        };
+
+        private static GameState MoveCursor(GameState gameState, MineField mineField, ConsoleKey key)
+        {
+            var cursorPosition = Move(gameState.CursorPosition, key, mineField.Size);
+            return gameState.Move(cursorPosition);
+        }
+
         private static void Main(string[] args)
         {
             var options = OptionsUi.ReadOptions();
             var mineField = MineFiedlBuilder.GenerateRandom(options);
 
-            var gameState = new GameState
-            {
-                CursorPosition = new Point(0, 0),
-                GameResult = new GameResult(false, options.Size.Width*options.Size.Height)
-            };
-            gameState.Moves.Push(new Covers(options.Size));
+            var gameState = GameState.Create(Covers.Create(options.Size));
 
 
             var drawParams = new DrawParams(options.Size, new Point(2, 2), new Scale(4, 2));
+
 
             using (CustomConsoleSettings.Init(drawParams))
             {
                 DrawTitle(new[] {"SPACE-open  ENTER-flag  Q-quit  U-undo"}, drawParams);
                 GridUi.Draw(drawParams);
 
-                while (!gameState.GameResult.IsGameOver())
-                {
+                var result = Game.Evaluate(options, mineField, gameState.Covers());
+                do {
                     Draw(mineField, drawParams, gameState);
                     DrawCursor(gameState.CursorPosition, drawParams);
                     var key = Console.ReadKey(true).Key;
-                    switch (key)
-                    {
-                        case ConsoleKey.UpArrow:
-                        case ConsoleKey.DownArrow:
-                        case ConsoleKey.LeftArrow:
-                        case ConsoleKey.RightArrow:
-                            gameState.CursorPosition = Move(gameState.CursorPosition, key, drawParams.Size);
-                            break;
-                        case ConsoleKey.U:
-                            if (gameState.Moves.Count > 1) gameState.Moves.Pop();
-                            break;
-                        case ConsoleKey.Q:
-                            gameState.GameResult = new GameResult(true, 0);
-                            break;
-                        case ConsoleKey.Spacebar:
-                            gameState.Moves.Push(gameState.Moves.Peek()
-                                .UncoverDeep(mineField, gameState.CursorPosition, options.Size));
-                            gameState.GameResult = Game.Evaluate(options, mineField, gameState.Moves.Peek());
-                            break;
-                        case ConsoleKey.Enter:
-                            gameState.Moves.Push(gameState.Moves.Peek().SwitchFlag(gameState.CursorPosition));
-                            break;
-                    }
-                }
-                gameState.Moves.Push(gameState.Moves.Peek()
-                    .UncoverMines(mineField));
+
+                    Func<GameState, MineField, GameState> command;
+                    var found = Commands.TryGetValue(key, out command);
+                    if (!found) continue;
+                    gameState = command(gameState, mineField);
+                    result = Game.Evaluate(options, mineField, gameState.Covers());
+                } while (!result.IsGameOver());
+
                 Draw(mineField, drawParams, gameState);
-
-
                 DrawTitle(
                     new[]
                     {
-                        gameState.GameResult.HasFailed
+                        result.HasFailed
                             ? "Sorry, you lost this game. Better luck next time!"
                             : "Congratulations, you won the game!",
                         "Press any key to EXIT ..."
@@ -119,15 +155,15 @@ namespace try2
 
         private static void Draw(MineField mines, DrawParams drawParams, GameState gameState)
         {
-            var covers = gameState.Moves.Peek();
+            var covers = gameState.Covers();
             var points = drawParams
                 .Size
                 .AllPoints();
 
-            Draw(mines, drawParams, points, covers);
+            Draw(points, mines, covers, drawParams);
         }
 
-        private static void Draw(MineField mines, DrawParams drawParams, IEnumerable<Point> points, Covers covers)
+        private static void Draw(IEnumerable<Point> points, MineField mines, Covers covers, DrawParams drawParams)
         {
             Console.CursorVisible = false;
             points
@@ -143,9 +179,9 @@ namespace try2
         }
 
         private static Icon GetIcon(
-            Func<bool> isCover, 
-            Func<bool> isFlag, 
-            Func<bool> isMine, 
+            Func<bool> isCover,
+            Func<bool> isFlag,
+            Func<bool> isMine,
             Func<int> getWarnings)
         {
             return isCover()
@@ -156,24 +192,5 @@ namespace try2
                     ? MineIcon
                     : WarningIcons[getWarnings()];
         }
-
-
-        private static readonly Icon MineIcon = new Icon('¤', ConsoleColor.White);
-        private static readonly Icon EmptyIcon = new Icon(' ', ConsoleColor.Black);
-        private static readonly Icon FlagIcon = new Icon('►', ConsoleColor.Red);
-        private static readonly Icon CoverIcon = new Icon('░', ConsoleColor.DarkGray);
-
-        private static readonly Icon[] WarningIcons = new[]
-        {
-            new Icon(' ', ConsoleColor.Black),
-            new Icon('1', ConsoleColor.Blue),
-            new Icon('2', ConsoleColor.DarkGreen),
-            new Icon('3', ConsoleColor.Yellow),
-            new Icon('4', ConsoleColor.DarkBlue),
-            new Icon('5', ConsoleColor.DarkGreen),
-            new Icon('6', ConsoleColor.Cyan),
-            new Icon('7', ConsoleColor.Gray),
-            new Icon('8', ConsoleColor.Magenta)
-        };
     }
 }

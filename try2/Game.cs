@@ -25,16 +25,15 @@ namespace try2
         public static Covers UncoverDeep(
             this Covers covers,
             MineField mineField,
-            Point point,
-            Size size)
+            Point point)
         {
             if (!covers.IsCovered(point)) return covers;
             if (!mineField.IsEmptyAt(point)) return covers.Uncover(point);
             return point
-                .Neighbours(size)
+                .Neighbours(mineField.Size)
                 .Aggregate(
                     covers.Uncover(point),
-                    (current, neighbor) => current.UncoverDeep(mineField, neighbor, size));
+                    (current, neighbor) => current.UncoverDeep(mineField, neighbor));
         }
 
         [Pure]

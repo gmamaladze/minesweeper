@@ -18,7 +18,7 @@ namespace try2
         {
             var mines = CreateRandomMines(minesCount, size);
             var warings = CalculateWarnings(mines, size);
-            return new MineField(mines, warings);
+            return new MineField(size, mines, warings);
         }
 
         [Pure]
@@ -33,7 +33,7 @@ namespace try2
         }
 
         [Pure]
-        private static IReadOnlyDictionary<Point, int> CalculateWarnings(IReadOnlySet<Point> mines, Size size)
+        private static IReadOnlyDictionary<Point, int> CalculateWarnings(IEnumerable<Point> mines, Size size)
         {
             return 
                 mines

@@ -4,11 +4,13 @@ namespace try2
 {
     internal class MineField
     {
+        public Size Size { get; }
         private readonly IReadOnlySet<Point> _mines;
         private readonly IReadOnlyDictionary<Point, int> _warnings;
 
-        public MineField(IReadOnlySet<Point> mines, IReadOnlyDictionary<Point, int> warnings)
+        public MineField(Size size, IReadOnlySet<Point> mines, IReadOnlyDictionary<Point, int> warnings)
         {
+            Size = size;
             _mines = mines;
             _warnings = warnings;
         }
