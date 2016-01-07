@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command.cs" />
+    <Compile Include="Key2CommandExtension.cs" />
     <Compile Include="Ui\Board.cs" />
     <Compile Include="Covers.cs" />
     <Compile Include="Ui\Cell.cs" />
