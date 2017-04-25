@@ -58,9 +58,9 @@ namespace Fmines
             return _covers[point];
         }
 
-        public int UnflaggedCount()
+        public int CoverCount()
         {
-            return _covers.Values.Count(hasFlag => !hasFlag);
+            return _covers.Values.Count();
         }
     }
 }
