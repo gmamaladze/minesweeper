@@ -51,7 +51,7 @@ namespace Fmines
                 mineField
                     .Mines()
                     .Any(mine => !covers.IsCovered(mine)),
-                covers.UnflaggedCount());
+                covers.CoverCount() - mineField.Mines().Count());
         }
 
 
