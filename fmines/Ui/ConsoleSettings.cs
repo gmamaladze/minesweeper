@@ -7,7 +7,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal class ConsoleSettings
+    public class ConsoleSettings
     {
         private readonly ConsoleColor _backgroundColor;
         private readonly int _cursorSize;

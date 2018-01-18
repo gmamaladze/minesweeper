@@ -6,7 +6,7 @@ using System;
 
 namespace Fmines.Geometry
 {
-    internal class Size
+    public class Size
     {
         public Size(int width, int height)
         {

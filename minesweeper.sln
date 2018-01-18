@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fmines", "fmines\fmines.csproj", "{2367B763-7AD5-4C25-A93B-DB5312143714}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "fs-mines", "fs-mines\fs-mines.fsproj", "{4BF5A5E9-EA3C-4ECC-A20F-09DEFE27FE8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{2367B763-7AD5-4C25-A93B-DB5312143714}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2367B763-7AD5-4C25-A93B-DB5312143714}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2367B763-7AD5-4C25-A93B-DB5312143714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BF5A5E9-EA3C-4ECC-A20F-09DEFE27FE8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BF5A5E9-EA3C-4ECC-A20F-09DEFE27FE8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BF5A5E9-EA3C-4ECC-A20F-09DEFE27FE8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BF5A5E9-EA3C-4ECC-A20F-09DEFE27FE8F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

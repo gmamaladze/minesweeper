@@ -7,7 +7,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal class Option
+    public class Option
     {
         public Option(Size size, int minesCount, string description = "Custom")
         {

@@ -8,7 +8,7 @@ using Fmines.Geometry;
 
 namespace Fmines
 {
-    internal class GameState
+    public class GameState
     {
         private readonly IImmutableStack<Covers> _moves;
 

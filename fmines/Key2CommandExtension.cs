@@ -8,7 +8,7 @@ using Fmines.Geometry;
 
 namespace Fmines
 {
-    internal static class Key2CommandExtension
+    public static class Key2CommandExtension
     {
         public static readonly Command Undo = (s, m) => Game.Undo(s);
         public static readonly Command SwitchFlag = (s, m) => Game.SwitchFlag(s);

@@ -10,5 +10,5 @@ namespace Fmines
     /// <param name="gameState"></param>
     /// <param name="mineField"></param>
     /// <returns></returns>
-    internal delegate GameState Command(GameState gameState, MineField mineField);
+    public delegate GameState Command(GameState gameState, MineField mineField);
 }

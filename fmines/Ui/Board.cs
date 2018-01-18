@@ -7,7 +7,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal static class Board
+    public static class Board
     {
         public static void Draw(Graphics graphics, MineField mines, Covers covers)
         {

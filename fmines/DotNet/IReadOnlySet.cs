@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Fmines.DotNet
 {
-    internal interface IReadOnlySet<T> : IEnumerable<T>
+    public interface IReadOnlySet<T> : IEnumerable<T>
     {
         bool Contains(T item);
     }

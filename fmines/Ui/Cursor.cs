@@ -7,7 +7,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal static class Cursor
+    public static class Cursor
     {
         public static void Draw(Graphics graphics, Point position)
         {

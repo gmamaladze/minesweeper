@@ -7,7 +7,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal class Graphics : IDisposable
+    public class Graphics : IDisposable
     {
         private readonly ConsoleSettings _originalSettings;
 

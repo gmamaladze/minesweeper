@@ -8,7 +8,7 @@ using Fmines.Geometry;
 
 namespace Fmines
 {
-    internal static class Game
+    public static class Game
     {
         [Pure]
         public static GameState Start(MineField mineField)

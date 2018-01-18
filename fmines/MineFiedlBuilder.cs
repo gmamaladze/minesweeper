@@ -11,7 +11,7 @@ using Fmines.Geometry;
 
 namespace Fmines
 {
-    internal class MineFiedlBuilder
+    public class MineFiedlBuilder
     {
         [Pure]
         public static MineField GenerateRandom(int minesCount, Size size)

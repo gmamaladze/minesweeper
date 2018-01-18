@@ -9,7 +9,7 @@ using Fmines.Geometry;
 
 namespace Fmines
 {
-    internal class Covers
+    public class Covers
     {
         private readonly IImmutableDictionary<Point, bool> _covers;
 

@@ -8,7 +8,7 @@ using Fmines.Geometry;
 
 namespace Fmines
 {
-    internal class MineField
+    public class MineField
     {
         private readonly IReadOnlySet<Point> _mines;
         private readonly IReadOnlyDictionary<Point, int> _warnings;

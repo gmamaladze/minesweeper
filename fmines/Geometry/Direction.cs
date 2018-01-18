@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Fmines.Geometry
 {
-    internal class Direction : Point
+    public class Direction : Point
     {
         private Direction(int dx, int dy)
             : base(dx, dy)

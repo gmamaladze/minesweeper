@@ -8,7 +8,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal static class OptionSelector
+    public static class OptionSelector
     {
         public static Option ReadOptions()
         {

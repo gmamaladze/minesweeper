@@ -4,7 +4,7 @@
 
 namespace Fmines.Geometry
 {
-    internal class Scale : Point
+    public class Scale : Point
     {
         public Scale(int x, int y)
             : base(x, y)

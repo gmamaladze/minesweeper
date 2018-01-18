@@ -4,7 +4,7 @@
 
 namespace Fmines
 {
-    internal class GameResult
+    public class GameResult
     {
         public GameResult(bool hasFailed, int coveredCount)
         {
