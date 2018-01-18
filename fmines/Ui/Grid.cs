@@ -8,7 +8,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal static class Grid
+    public static class Grid
     {
         private static readonly string[] Template =
         {

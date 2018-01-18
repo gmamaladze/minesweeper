@@ -9,6 +9,8 @@ let main argv =
     let mineField = MineFiedlBuilder.GenerateRandom(options.MinesCount, options.Size)
     let gameState = Game.Start(mineField)
     using (Graphics.Init(options.Size)) (fun graphics ->
+        Title.Draw(graphics, "SPACE-falg  ENTER-open  Q-quit  U-undo")
+        Grid.Draw(graphics)
         let rec loop(graphics: Graphics, mineField: MineField, gameState: GameState) : GameResult =
             Board.Draw(graphics, mineField, gameState.Covers());
             Cursor.Draw(graphics, gameState.CursorPosition);
@@ -19,6 +21,16 @@ let main argv =
             if result.IsGameOver() then result 
             else loop(graphics, mineField, gameState)
         let result = loop(graphics, mineField, gameState)
-        if result.HasFailed then 1
-        else 0
+        let allMinesUncovered = gameState.Covers().UncoverRange(mineField.Mines());
+        Board.Draw(
+            graphics
+            ,mineField
+            ,allMinesUncovered);
+        Title.Draw(
+            graphics,
+            if result.HasFailed then "Sorry, you lost this game. Better luck next time!" 
+            else "Congratulations, you won the game!"
+            , "Press any key to EXIT ...")
     )
+    Console.ReadKey true |> ignore 
+    0

@@ -7,7 +7,7 @@ using Fmines.Geometry;
 
 namespace Fmines.Ui
 {
-    internal static class Title
+    public static class Title
     {
         public static void Draw(Graphics graphics, string line1, string line2 = "")
         {
