@@ -2,6 +2,8 @@
 open Fmines.Ui
 open Fmines
 
+open Others
+
 [<EntryPoint>]
 let main argv = 
     printfn "%A" argv
