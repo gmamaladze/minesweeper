@@ -24,6 +24,11 @@ type Size = {Width:int; Height:int} with
 type GemResult = {HasFailed:bool; CoveredCount:int} with
     member x.IsGame = ( x.HasFailed || x.CoveredCount = 0)
 
+let rec removeAll (map : Map<Point, bool>,  points : list<Point> ) =
+    match points with
+        | [] -> map
+        | _ -> removeAll( map.Remove(points|>Seq.head) , points.Tail) 
+
 type Covers = {Covers: Map<Point, bool>} with
     member x.SwitchFlag (point: Point) =
         match x.Covers.TryFind(point) with
@@ -35,8 +40,9 @@ type Covers = {Covers: Map<Point, bool>} with
             | true -> {Covers = x.Covers.Remove(point)}
             | _ -> x
 
-    member x.UncoverRange points = {Covers = x.Covers.Remove(points)} //TODO: Remove mutiple elements
-
+    member x.UncoverRange ( points : list<Point>) = 
+                { Covers = removeAll(x.Covers, points) }
+            
     member x.IsCovered ( point : Point ) = x.Covers.ContainsKey(point);
 
     member x.HasFlag ( point:Point ) = x.Covers.Item(point)
@@ -45,3 +51,27 @@ type Covers = {Covers: Map<Point, bool>} with
 
     static member Create (size : Size) =
         {Covers = size.AllPoints |> Seq.map(fun p -> p, false) |> Map }
+    
+type GameStateF = {Moves : List<Covers> ; CursorPosition : Point} with
+    member x.Do ( covers: Covers ) =
+            {Moves = covers :: x.Moves ;  CursorPosition = x.CursorPosition}
+
+    member x.Do ( cursorPosition: Point ) =
+        {Moves = x.Moves; CursorPosition = cursorPosition}
+
+    member x.Undo =
+        match x.Moves with
+            | [] -> x
+            | _ -> { Moves=x.Moves.Tail ; CursorPosition=x.CursorPosition }
+
+    member x.Covers = 
+        x.Moves |> Seq.head
+
+//    member GameResult Evaluate(MineField mineField)
+//            var covers = Covers();
+//            return new GameResult(
+//                mineField
+//                    .Mines()
+//                    .Any(mine => !covers.IsCovered(mine)),
+//                covers.CoverCount() - mineField.Mines().Count());
+//        }
