@@ -56,7 +56,9 @@
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Others.fs" />
+    <Compile Include="Geometry.fs" />
+    <Compile Include="Board.fs" />
+    <Compile Include="Gameplay.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <Content Include="packages.config" />
