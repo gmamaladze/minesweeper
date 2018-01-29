@@ -72,7 +72,9 @@
       <HintPath>$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\FSharp\.NETFramework\v4.0\$(TargetFSharpCoreVersion)\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.ValueTuple">
@@ -85,6 +87,10 @@
       <Name>fmines</Name>
       <Project>{2367b763-7ad5-4c25-a93b-db5312143714}</Project>
       <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\fmines\fmines.csproj">
+      <Project>{2367b763-7ad5-4c25-a93b-db5312143714}</Project>
+      <Name>fmines</Name>
     </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

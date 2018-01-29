@@ -15,6 +15,7 @@ namespace Fmines.Ui
             var consolePosition = graphics.Transform(position) + new Point(2, 1);
             Console.SetCursorPosition(consolePosition.X, consolePosition.Y);
             Console.ForegroundColor = icon.Color;
+            Console.BackgroundColor = ConsoleColor.Black;
             Console.Write(icon.Symbol);
             Console.CursorVisible = true;
         }
