@@ -11,9 +11,9 @@ namespace Fmines
     public class MineField
     {
         private readonly IReadOnlySet<Point> _mines;
-        private readonly IReadOnlyDictionary<Point, int> _warnings;
+        private readonly IDictionary<Point, int> _warnings;
 
-        public MineField(Size size, IReadOnlySet<Point> mines, IReadOnlyDictionary<Point, int> warnings)
+        public MineField(Size size, IReadOnlySet<Point> mines, IDictionary<Point, int> warnings)
         {
             Size = size;
             _mines = mines;

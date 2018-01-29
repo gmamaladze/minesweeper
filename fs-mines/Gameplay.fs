@@ -5,7 +5,7 @@ open Geometry
 open Board
 
 type GemResult = {HasFailed:bool; CoveredCount:int} with
-    member x.IsGame = ( x.HasFailed || x.CoveredCount = 0)
+    member x.IsGameOver = ( x.HasFailed || x.CoveredCount = 0)
 
 type GameState = {Moves : List<Covers> ; CursorPosition : Point} with
     member x.Do ( covers: Covers ) =
@@ -56,3 +56,15 @@ module Game =
     let MoveCursor(current: GameState, mineField: MineField , direction : Direction ) =
         let move = current.CursorPosition.Move(direction, mineField.Size)
         current.Do move
+    
+    let ExecuteCommand(key: ConsoleKey, s: GameState, m: MineField) : GameState =
+        match key with
+        | ConsoleKey.UpArrow -> MoveCursor(s, m, Direction.Up)
+        | ConsoleKey.DownArrow -> MoveCursor(s, m, Direction.Down)
+        | ConsoleKey.LeftArrow -> MoveCursor(s, m, Direction.Left)
+        | ConsoleKey.RightArrow -> MoveCursor(s, m, Direction.Right)
+        | ConsoleKey.Spacebar -> SwitchFlag(s)
+        | ConsoleKey.Enter -> Uncover(s,m)
+        | ConsoleKey.Q -> Quit(s,m)
+        | ConsoleKey.U -> Undo(s)
+        | _ -> s

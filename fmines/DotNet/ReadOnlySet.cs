@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Fmines.DotNet
 {
-    internal class ReadOnlySet<T> : IReadOnlySet<T>
+    public class ReadOnlySet<T> : IReadOnlySet<T>
     {
         private readonly ISet<T> _set;
 

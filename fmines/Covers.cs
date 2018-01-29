@@ -13,7 +13,7 @@ namespace Fmines
     {
         private readonly IImmutableDictionary<Point, bool> _covers;
 
-        private Covers(IImmutableDictionary<Point, bool> covers)
+        public Covers(IImmutableDictionary<Point, bool> covers)
         {
             _covers = covers;
         }

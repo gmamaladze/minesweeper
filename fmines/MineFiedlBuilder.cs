@@ -33,7 +33,7 @@ namespace Fmines
         }
 
         [Pure]
-        private static IReadOnlyDictionary<Point, int> CalculateWarnings(IEnumerable<Point> mines, Size size)
+        private static IDictionary<Point, int> CalculateWarnings(IEnumerable<Point> mines, Size size)
         {
             return
                 mines
