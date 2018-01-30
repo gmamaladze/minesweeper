@@ -1,6 +1,6 @@
 ![Screenshot of Functional Minesweeper in C#](fs-mines.png)
 
-Functional Minesweeper in C#
+Functional Minesweeper in F# and C#
 ==========================
 
 This project it is not about what it does, it's about code.
@@ -9,7 +9,7 @@ The code of the first implementation is written in **C#**, but in a very functio
 The second implementation is the port of the C# implementation into **F#**. Since I tried to stick to the functional paradigm in
 the original implementation the port turned out to be just a kind of *"word by word translation"*.
 
-###Example:
+### Example:
 ```c#
         public GameState Undo()
         {
@@ -29,7 +29,7 @@ the original implementation the port turned out to be just a kind of *"word by w
               CursorPosition = x.CursorPosition }
 ```
 
-###Pure functional in C#
+### Pure functional in C#
 This experiment and my expirience showed that now-days you **can** stick to functiona paradigm while using a universal languages like Java or C#.
 
 Beeing functional in C# ...
